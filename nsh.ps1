@@ -1,11 +1,26 @@
 Clear-Host
 
 "
----------------
-    N A N O
-  S N I P E
-    H U N T
----------------
+__________________________
+|                        |
+|---------------|         |
+--S-N-I-P-E----|         |
+----H-U-N-T----|         |
+------v0.1-----|         |
+|---------------|         | 
+|                        |
+|    誰かにさえ            |
+|    この悲しみの情熱の自由  |
+|    明らかでしょう：       |
+|    秋の夕方              |
+|    縄跳びが上がる沼地      |
+|                         |
+|         |---------------|
+|         |-R-E-V-E-N-G-E-
+|         |-B-E--W-I-T-H--
+|         |----Y-O-U------
+|         |---------------|
+|______________+__________|
 "
 
 $potentiallydangerousip = Read-Host "IP in question"
@@ -21,6 +36,8 @@ if(Invoke-WebRequest https://www.abuseipdb.com/check/$potentiallydangerousip | S
         if($IsLinux -eq "True")
         {
             firefox -new-tab -url https://www.abuseipdb.com/check/$potentiallydangerousip -new-tab -url https://www.threatcrowd.org/ip.php?ip=$potentiallydangerousip -new-tab -url https://www.virustotal.com/#/ip-address/$potentiallydangerousip -new-tab -url https://www.threatminer.org/host.php?q=$potentiallydangerousip
+            whois $potentiallydangerousip
+            nslookup $potentiallydangerousip
         }
         else
         {
