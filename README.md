@@ -1,8 +1,10 @@
-# nano-snipehunt
-A small PowerShell utility to see if an IP address is malicious.
+# snipehunt
+A small PowerShell tool for finding information quickly on malicious IPs or FQDNs.
 
 
-## what's next?
-- Ability to run against a list
-- Export results
-- SIEM workflow
+## Versions
+- cli.ps1:          the command-line interface version of the tool. Can be used on Linux!
+- graphical.ps1:    the graphical version of this tool. Windows only. No prompt for Firefox launch.
+
+### Etc
+Feel free to contribute or fork! 
