@@ -128,7 +128,7 @@ function hunter()
                 $reportdate = Get-Content $reportfile | Select-String $potentiallydangerousip | cut -d " " -f 2
                 $result.text += "`r`n" + "$potentiallydangerousip was reported on $reportdate"
             }
-            else
+            if( -not (Get-Content $reportfile | Select-String $potentiallydangerousip))
             {
                 Write-Output "$potentiallydangerousip $date" >> $reportfile
                 $result.text += "`r`n" + "$potentiallydangerousip has been reported!"
@@ -158,6 +158,7 @@ function hunter()
 function library()
 {
     $Form1.controls.AddRange(@($result1))
+    $result1.Clear()
     foreach($entry in Get-Content $reportfile)
     {
         $result1.text += "`r`n" + $entry
