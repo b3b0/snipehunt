@@ -1,4 +1,4 @@
-Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName PresentationFramework, System.Drawing, System.Windows.Forms, WindowsFormsIntegration
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 Clear-Host
@@ -6,6 +6,14 @@ $reportdir = "C:\Users\$env:UserName\snipenet\"
 $reportfile = "C:\Users\$env:UserName\snipenet\malicious-ip-history.txt"
 $todaysreport = "$reportdir$date.txt"
 $date = Get-Date -format "yyyyMMdd"
+$iconloc = "C:\Users\$env:UserName\AppData\Local\snipehunt\snipe.ico"
+$iconfold = "C:\Users\$env:UserName\AppData\Local\snipehunt"
+
+if( -not (Test-Path $iconfold -PathType Container))
+{
+    New-Item -ItemType "directory" -Path $iconfold
+    Invoke-WebRequest http://www.iconj.com/ico/b/7/b7st9a26ow.ico -OutFile $iconloc
+}
 
 if( -not (Test-Path $reportdir -PathType Container))
 {
@@ -17,10 +25,27 @@ if ( -not (Test-Path $reportfile -PathType Leaf))
     New-Item -ItemType "file" -Path $reportfile
 }
 
+# LIBRARY WINDOW
+$Form1                            = New-Object system.Windows.Forms.Form
+$Form1.ClientSize                 = '300,700'
+$Form1.text                       = "Library"
+$Form1.TopMost                    = $false
+$Form1.Icon = $iconloc
+
+$result1                          = New-Object system.Windows.Forms.TextBox
+$result1.multiline                = $true
+$result1.width                    = 295
+$result1.height                   = 695
+$result1.Anchor                   = 'top,right,bottom,left'
+$result1.location                 = New-Object System.Drawing.Point(0,0)
+$result1.Font                     = 'Microsoft Sans Serif,10'
+
+# MAIN WINDOW
 $Form                            = New-Object system.Windows.Forms.Form
 $Form.ClientSize                 = '492,280'
-$Form.text                       = "SNIPEHUNT v0.4"
+$Form.text                       = "SNIPEHUNT"
 $Form.TopMost                    = $false
+$Form.Icon = $iconloc
 
 $Label1                          = New-Object system.Windows.Forms.Label
 $Label1.text                     = "IP Addresses - one per line:"
@@ -39,7 +64,7 @@ $Label2.location                 = New-Object System.Drawing.Point(27,10)
 $Label2.Font                     = 'Microsoft Sans Serif,10'
 
 $Label3                          = New-Object system.Windows.Forms.Label
-$Label3.text                     = "a threat-hunting tool."
+$Label3.text                     = "a small threat-hunting tool."
 $Label3.AutoSize                 = $true
 $Label3.width                    = 25
 $Label3.height                   = 10
@@ -70,7 +95,7 @@ $closeButton.location            = New-Object System.Drawing.Point(359,228)
 $closeButton.Font                = 'Microsoft Sans Serif,10'
 
 $restartButton                   = New-Object system.Windows.Forms.Button
-$restartButton.text              = "Lookup"
+$restartButton.text              = "Library"
 $restartButton.width             = 102
 $restartButton.height            = 30
 $restartButton.location          = New-Object System.Drawing.Point(27,114)
@@ -86,7 +111,7 @@ $clearButton.Font              = 'Microsoft Sans Serif,10'
 $Form.controls.AddRange(@($compnameTxtbox,$Label1,$Label2,$Label3,$result,$pingButton,$closeButton,$restartButton,$clearButton))
 
 $pingButton.Add_Click({ hunter })
-$restartButton.Add_Click({ lookup })
+$restartButton.Add_Click({ library })
 $closeButton.Add_Click({ closeForm })
 $clearButton.Add_Click({$result.Clear()})
 
@@ -103,43 +128,43 @@ function hunter()
                 $reportdate = Get-Content $reportfile | Select-String $potentiallydangerousip | cut -d " " -f 2
                 $result.text += "`r`n" + "$potentiallydangerousip was reported on $reportdate"
             }
-            else 
+            else
             {
-                echo "$potentiallydangerousip $date" >> $reportfile
+                Write-Output "$potentiallydangerousip $date" >> $reportfile
                 $result.text += "`r`n" + "$potentiallydangerousip has been reported!"
             }
         }
-        else 
+        else
         {
             $result.text += "`r`n" + "$potentiallydangerousip is clean."
-        }    
+        }
     }
     $a = new-object -comobject wscript.shell 
     $intAnswer = $a.popup("Do you want to hunt?",0,"Proceed with hunt?",4) 
-    If ($intAnswer -eq 6) 
-    { 
+    If ($intAnswer -eq 6)
+    {
         Get-Content $reportfile | grep $date | cut -d " " -f 1 > $todaysreport
         foreach($maliciousip in Get-Content $todaysreport)
         {
             & 'C:\Program Files\Mozilla Firefox\firefox.exe' -new-tab -url https://www.abuseipdb.com/check/$maliciousip
-        } 
-    } 
-    else 
-    { 
+        }
+    }
+    else
+    {
        Start-sleep(1)
     }
 }
 
-function lookup()
+function library()
 {
-    $potentiallydangerousip = $compnameTxtbox.text
-    $result.text += "`r`n" +"Performing DNS resolution..."
-    $result.text += "`r`n" + "_____________"
-    $lookupresults = (nslookup $potentiallydangerousip) -join "`n"
-    $result.text += "`r`n" + $lookupresults
-    $result.text += "`r`n" + "_____________"
+    $Form1.controls.AddRange(@($result1))
+    foreach($entry in Get-Content $reportfile)
+    {
+        $result1.text += "`r`n" + $entry
+    }
+    [void]$Form1.ShowDialog()
 }
 
 function closeForm(){$Form.close()}
-    
+
 [void]$Form.ShowDialog()
