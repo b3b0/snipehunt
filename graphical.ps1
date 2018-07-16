@@ -149,7 +149,6 @@ function hunter()
 
         foreach($maliciousip in Get-Content $todaysreport)
         {
-            Write-Host $maliciousip
             & 'C:\Program Files\Mozilla Firefox\firefox.exe' -new-tab -url https://www.abuseipdb.com/check/$maliciousip
         }
     }
