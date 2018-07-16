@@ -2,9 +2,9 @@ Add-Type -AssemblyName PresentationFramework, System.Drawing, System.Windows.For
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 Clear-Host
-$reportdir = "C:\Users\$env:UserName\snipenet\"
+$reportdir = "C:\Users\$env:UserName\snipenet"
 $reportfile = "C:\Users\$env:UserName\snipenet\malicious-ip-history.txt"
-$todaysreport = "$reportdir$date.txt"
+$todaysreport = "$reportdir\$date.txt"
 $date = Get-Date -format "yyyyMMdd"
 $iconloc = "C:\Users\$env:UserName\AppData\Local\snipehunt\snipe.ico"
 $iconfold = "C:\Users\$env:UserName\AppData\Local\snipehunt"
@@ -117,7 +117,7 @@ $clearButton.Add_Click({$result.Clear()})
 
 function hunter()
 {
-    $stringArray = $result.Text.Split("`n") | % {$_.trim()}
+    $stringArray = $result.Text.Split("`n") | ForEach-Object{$_.trim()}
     $result.Clear()
     foreach($potentiallydangerousip in $stringArray)
     {
@@ -125,7 +125,7 @@ function hunter()
         {
             if(Get-Content $reportfile | Select-String $potentiallydangerousip)
             {
-                $reportdate = Get-Content $reportfile | Select-String $potentiallydangerousip | cut -d " " -f 2
+                $reportdate = Get-Content $reportfile | Select-String $potentiallydangerousip | Out-String | ForEach-Object{$_.split(' ')[1]}
                 $result.text += "`r`n" + "$potentiallydangerousip was reported on $reportdate"
             }
             if( -not (Get-Content $reportfile | Select-String $potentiallydangerousip))
@@ -139,13 +139,17 @@ function hunter()
             $result.text += "`r`n" + "$potentiallydangerousip is clean."
         }
     }
-    $a = new-object -comobject wscript.shell 
-    $intAnswer = $a.popup("Do you want to hunt?",0,"Proceed with hunt?",4) 
+    $a = new-object -comobject wscript.shell
+    $intAnswer = $a.popup("Do you want to hunt?",0,"Proceed with hunt?",4)
     If ($intAnswer -eq 6)
     {
-        Get-Content $reportfile | grep $date | cut -d " " -f 1 > $todaysreport
+        Remove-Item -Path "$reportdir\temp.txt"
+        Get-Content $reportfile | select-string $date | Out-String | ForEach-Object{$_.split(' ')} >> "$reportdir\temp.txt"
+        Get-Content "$reportdir\temp.txt" | select-string $date -NotMatch | Out-String | ForEach-Object{$_.trim()} > $todaysreport
+
         foreach($maliciousip in Get-Content $todaysreport)
         {
+            Write-Host $maliciousip
             & 'C:\Program Files\Mozilla Firefox\firefox.exe' -new-tab -url https://www.abuseipdb.com/check/$maliciousip
         }
     }
