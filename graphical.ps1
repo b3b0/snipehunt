@@ -1,6 +1,8 @@
 Add-Type -AssemblyName PresentationFramework, System.Drawing, System.Windows.Forms, WindowsFormsIntegration
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
+[Net.ServicePointManager]::SecurityProtocol = 'tls12'
+
 Clear-Host
 $reportdir = "C:\Users\$env:UserName\snipenet"
 $reportfile = "C:\Users\$env:UserName\snipenet\malicious-ip-history.txt"
