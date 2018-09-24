@@ -1,7 +1,7 @@
 # snipehunt
 A small PowerShell tool for finding information quickly on malicious IPs or FQDNs.
 
-![SnIpEhUnT](https://kek.gg/i/76VLgg.png)
+![SnIpEhUnT](https://i.imgur.com/F3w1WAL.png)
 v0.7.5.1
 
 ## Download
