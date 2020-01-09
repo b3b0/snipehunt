@@ -5,7 +5,7 @@ Clear-Host
 Write-Host "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
 Write-Host "SNIPEHUNT-CLI 2.0.1 - https://github.com/b3b0/snipehunt"
 Write-Host "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
-$potentiallydangerousip = Read-Host "IP in question" -foregroundcolor Blue
+$potentiallydangerousip = Read-Host "IP in question"
 if(Invoke-WebRequest https://www.abuseipdb.com/check/$potentiallydangerousip -UseBasicParsing | Select-Object -ExpandProperty RawContent | select-string "was found in our database!")
 {
     Clear-Host
