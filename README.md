@@ -16,8 +16,8 @@ But if you insist:
 [Get it right here!](https://github.com/b3b0/snipehunt/releases/download/v0.7.5/snipehunt-0.7.5-x86_x64.exe)
 
 ## Versions
-- cli.ps1:          the command-line interface version of the tool. Can be used on Linux!
-- graphical.ps1:    the graphical version of this tool. Windows only. No prompt for Firefox launch.
+- cli.ps1:          the command-line interface version of the tool. Can be used on Linux! Launches Firefox in Linux. Plans to change to Chrome.
+- graphical.ps1:    the graphical version of this tool. Windows only. Will launch Chrome with all requested information.
 
 ## Requirements
 - Google Chrome
