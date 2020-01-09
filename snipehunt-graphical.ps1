@@ -1,3 +1,6 @@
+# b3b0
+# https://github.com/b3b0
+
 Add-Type -AssemblyName PresentationFramework, System.Drawing, System.Windows.Forms, WindowsFormsIntegration
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
