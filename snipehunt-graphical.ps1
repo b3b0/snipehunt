@@ -151,6 +151,7 @@ function hunter()
 
         foreach($maliciousip in Get-Content $todaysreport)
         {
+            & 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'  --new-tab https://www.abuseipdb.com/check/$potentiallydangerousip --new-tab https://www.threatcrowd.org/ip.php?ip=$potentiallydangerousip --new-tab https://www.threatcrowd.org/ip.php?ip=$potentiallydangerousip --new-tab "https://www.virustotal.com/#/ip-address/$potentiallydangerousip" --new-tab https://www.threatminer.org/host.php?q=$potentiallydangerousip
             & 'C:\Program Files\Mozilla Firefox\firefox.exe' -new-tab -url https://www.abuseipdb.com/check/$maliciousip
         }
     }
