@@ -123,7 +123,7 @@ function hunter()
     $result.Clear()
     foreach($potentiallydangerousip in $stringArray)
     {
-        if(Invoke-WebRequest https://www.abuseipdb.com/check/$potentiallydangerousip | Select-Object -ExpandProperty RawContent | select-string "was found in our database!")
+        if(Invoke-WebRequest https://www.abuseipdb.com/check/$potentiallydangerousip -UseBasicParsing | Select-Object -ExpandProperty RawContent | select-string "was found in our database!")
         {
             if(Get-Content $reportfile | Select-String $potentiallydangerousip)
             {
@@ -145,14 +145,17 @@ function hunter()
     $intAnswer = $a.popup("Do you want to hunt?",0,"Proceed with hunt?",4)
     If ($intAnswer -eq 6)
     {
-        Remove-Item -Path "$reportdir\temp.txt"
+        if (Get-Content "$reportdir\temp.txt")
+        {
+            Remove-Item -Path "$reportdir\temp.txt"
+        }
         Get-Content $reportfile | select-string $date | Out-String | ForEach-Object{$_.split(' ')} >> "$reportdir\temp.txt"
         Get-Content "$reportdir\temp.txt" | select-string $date -NotMatch | Out-String | ForEach-Object{$_.trim()} > $todaysreport
 
         foreach($maliciousip in Get-Content $todaysreport)
         {
             & 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'  --new-tab https://www.abuseipdb.com/check/$potentiallydangerousip --new-tab https://www.threatcrowd.org/ip.php?ip=$potentiallydangerousip --new-tab https://www.threatcrowd.org/ip.php?ip=$potentiallydangerousip --new-tab "https://www.virustotal.com/#/ip-address/$potentiallydangerousip" --new-tab https://www.threatminer.org/host.php?q=$potentiallydangerousip
-            & 'C:\Program Files\Mozilla Firefox\firefox.exe' -new-tab -url https://www.abuseipdb.com/check/$maliciousip
+            #& 'C:\Program Files\Mozilla Firefox\firefox.exe' -new-tab -url https://www.abuseipdb.com/check/$maliciousip
         }
     }
     else
